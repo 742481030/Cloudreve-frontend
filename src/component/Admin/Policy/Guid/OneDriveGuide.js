@@ -1,25 +1,25 @@
-import Button from "@material-ui/core/Button";
-import Collapse from "@material-ui/core/Collapse";
-import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
-import Link from "@material-ui/core/Link";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
-import Stepper from "@material-ui/core/Stepper";
 import { lighten, makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import React, { useCallback, useEffect, useState } from "react";
+import Stepper from "@material-ui/core/Stepper";
+import StepLabel from "@material-ui/core/StepLabel";
+import Step from "@material-ui/core/Step";
+import Typography from "@material-ui/core/Typography";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router";
-import { toggleSnackbar } from "../../../../actions";
+import {  toggleSnackbar } from "../../../../actions";
+import Link from "@material-ui/core/Link";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Input from "@material-ui/core/Input";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
+import Collapse from "@material-ui/core/Collapse";
+import Button from "@material-ui/core/Button";
 import API from "../../../../middleware/Api";
-import SizeInput from "../../Common/SizeInput";
-import AlertDialog from "../../Dialogs/Alert";
 import MagicVar from "../../Dialogs/MagicVar";
+import SizeInput from "../../Common/SizeInput";
+import { useHistory } from "react-router";
+import AlertDialog from "../../Dialogs/Alert";
 
 const useStyles = makeStyles(theme => ({
     stepContent: {
@@ -116,7 +116,7 @@ export default function OneDriveGuide(props) {
         SecretKey: "",
         AccessKey: "",
         BaseURL: "",
-        Server: "https://graph.microsoft.com/v1.0/me",
+        Server: "https://graph.microsoft.com/v1.0",
         IsPrivate: "true",
         DirNameRule: "uploads/{year}/{month}/{day}",
         AutoRename: "true",
@@ -202,7 +202,7 @@ export default function OneDriveGuide(props) {
         policyCopy.OptionsSerialized = { ...policyCopy.OptionsSerialized };
 
         // baseURL处理
-        if (policyCopy.Server === "https://graph.microsoft.com/v1.0/me"){
+        if (policyCopy.Server === "https://graph.microsoft.com/v1.0"){
             policyCopy.BaseURL = "https://login.microsoftonline.com/common/oauth2/v2.0"
         }else{
             policyCopy.BaseURL = "https://login.chinacloudapi.cn/common/oauth2"
@@ -386,7 +386,7 @@ export default function OneDriveGuide(props) {
                         </div>
                         <div className={classes.subStepContent}>
                             <Typography variant={"body2"}>
-                                选择您的 OneDrive 账号类型：
+                选择您的 OneDrive 账号类型：sharepoint授权后到专家模式用rclone获取站点id替换成 https://microsoftgraph.chinacloudapi.cn/v1.0/sites/站点id/drive/
                             </Typography>
                             <div className={classes.form}>
                                 <FormControl required component="fieldset">
@@ -397,14 +397,14 @@ export default function OneDriveGuide(props) {
                                         row
                                     >
                                         <FormControlLabel
-                                            value={"https://graph.microsoft.com/v1.0/me"}
+                                            value={"https://graph.microsoft.com/v1.0/me/drive/"}
                                             control={
                                                 <Radio color={"primary"} />
                                             }
                                             label="国际版"
                                         />
                                         <FormControlLabel
-                                            value={"https://microsoftgraph.chinacloudapi.cn/v1.0/me"}
+                                            value={"https://microsoftgraph.chinacloudapi.cn/v1.0/me/drive/"}
                                             control={
                                                 <Radio color={"primary"} />
                                             }
@@ -472,10 +472,8 @@ export default function OneDriveGuide(props) {
                                 可用魔法变量可参考{" "}
                                 <Link
                                     color={"secondary"}
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      setMagicVar("path")
-                                    }}
+                                    href={"javascript:void()"}
+                                    onClick={() => setMagicVar("path")}
                                 >
                                     路径魔法变量列表
                                 </Link>{" "}
@@ -507,10 +505,8 @@ export default function OneDriveGuide(props) {
                                 可用魔法变量可参考{" "}
                                 <Link
                                     color={"secondary"}
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      setMagicVar("file")
-                                    }}
+                                    href={"javascript:void()"}
+                                    onClick={() => setMagicVar("file")}
                                 >
                                     文件名魔法变量列表
                                 </Link>{" "}
@@ -787,6 +783,8 @@ export default function OneDriveGuide(props) {
                             <Typography variant={"body2"}>
                                 存储策略已{props.policy ? "保存" : "添加"}，但是你需要点击下方按钮，并使用 OneDrive 登录授权以完成初始化后才能使用。
                                 日后你可以在存储策略列表页面重新进行授权。
+                                不配置cdn时,务必去专家模式  清空文件资源根URL	
+预览/获取文件外链时生成URL的前缀
                             </Typography>
                             <div className={classes.form}>
                                 <Button
